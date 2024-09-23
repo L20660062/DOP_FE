@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 export default function CameraScreen() {
   return (
     <View style={styles.container}>
-      <Text>¡Bienvenido a la pantalla de detección de objetos!</Text>
+      <Text>¡Bienvenido a la pantalla de detección de objetos Con VPC!</Text>
     </View>
   );
 }
