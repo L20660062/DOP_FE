@@ -94,6 +94,6 @@ const styles = StyleSheet.create({
     width: 95, // Ajusta el tamaño de la imagen
     height: 95, // Ajusta el tamaño de la imagen
     resizeMode: 'contain',
-    marginLeft: 135,
+    marginLeft: 10,
   },
 });
