@@ -14,10 +14,7 @@ const Stack = createStackNavigator();
 // Componente para el título con imagen
 const TitleWithImage = () => (
   <View style={styles.titleContainer}>
-    <Image 
-      source={require('./assets/Logo Letras.png')} // Reemplaza con tu imagen
-      style={styles.titleImage} 
-    />
+  <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>Detección de Objetos</Text>
   </View>
 );
 
@@ -53,13 +50,18 @@ function TabNavigator() {
       />
       
       <Tab.Screen 
-        name="Configuración" 
-        component={SettingsScreen} 
-        options={{ 
-          tabBarLabel: 'Ajustes',  // Nombre personalizado para la pestaña inferior
-          title: 'Configuración'  // Título para la pestaña
-        }}  
-      />
+  name="Configuración" 
+  component={SettingsScreen} 
+  options={{ 
+    tabBarLabel: 'Ajustes',  // Nombre personalizado para la pestaña inferior
+    headerTitle: () => (
+      <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
+        Configuración
+      </Text>
+    ),  // Componente personalizado para el título
+  }}  
+/>
+
     </Tab.Navigator>
   );
 }
