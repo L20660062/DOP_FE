@@ -128,7 +128,7 @@ export default function App() {
     </NavigationContainer>
   );
 }
-//aa
+//PRUEBA
 const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
