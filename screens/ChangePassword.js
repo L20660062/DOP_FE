@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: 'flex-start', // Cambiado para no centrar
+    justifyContent: 'flex-start', // Cambiado para no centrars
     backgroundColor: '#f9f9f9',
   },
   title: {

@@ -29,7 +29,7 @@ export default function ChangePhoneNumber() {
       
       <TouchableOpacity 
         style={styles.button} 
-        onPress={() => { /* Lógica para cambiar número */ }}
+        onPress={() => { /* Lógica para cambiar números */ }}
       >
         <Text style={styles.buttonText}>Guardar Cambios</Text>
       </TouchableOpacity>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
 
-// Lista de usuarios limitada a 3
+// Lista de usuarios limitada a 3s
 const users = [
   { id: 1, name: 'Usuario 1', avatar: 'https://via.placeholder.com/100?text=ERES' },
   { id: 2, name: 'Usuario 2', avatar: 'https://via.placeholder.com/100?text=UN' },
