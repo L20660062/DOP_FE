@@ -8,7 +8,7 @@ export default function ChangePhoneNumber() {
   useEffect(() => {
     // Iniciar animación de deslizamiento al montar el componente
     Animated.timing(slideAnim, {
-      toValue: 0, // Mueve a la posición normal
+      toValue: 0, // Mueve a la posición normals
       duration: 300,
       easing: Easing.ease,
       useNativeDriver: true,

@@ -19,7 +19,7 @@ export default function Reportes() {
     }
   };
 
-  // Función para seleccionar una imagens
+  // Función para seleccionar una imagen
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     

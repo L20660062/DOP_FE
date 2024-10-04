@@ -6,6 +6,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Platform,
+  Modal,
+  Button,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
@@ -13,7 +16,7 @@ import * as ImagePicker from "expo-image-picker";
 export default function User() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedValue, setSelectedValue] = useState("Seleccionar");
-
+  const [modalVisible, setModalVisible] = useState(false);
 
   const pickImage = async () => {
     const permissionResult =
@@ -36,62 +39,114 @@ export default function User() {
     }
   };
 
+  const openPickerModal = () => {
+    if (Platform.OS === "ios") {
+      setModalVisible(true);
+    }
+  };
+
+  const closePickerModal = () => {
+    setModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
-      <Image source={{ uri: selectedImage }} style={styles.profileCircle} />
-
-      <TouchableOpacity style={styles.roundedButton} onPress={pickImage}>
-        <Text style={styles.buttonText}>Subir Foto</Text>
+      <TouchableOpacity onPress={pickImage}>
+        {selectedImage ? (
+          <Image source={{ uri: selectedImage }} style={styles.profileCircle} />
+        ) : (
+          <View style={styles.placeholderCircle}>
+            <Text style={styles.placeholderText}>Subir Foto</Text>
+          </View>
+        )}
       </TouchableOpacity>
+
       <View style={styles.containerRow}>
-        <Text style={styles.descText2}>Nombre(s):</Text>
-        <TextInput style={styles.inputPill2}></TextInput>
+        <Text style={styles.labelText}>Nombre(s):</Text>
+        <TextInput style={styles.inputPill} placeholder="Tu nombre" />
       </View>
+
       <View style={styles.containerRow}>
-        <Text style={styles.descText2}>Apellido(s):</Text>
-        <TextInput style={styles.inputPill2}></TextInput>
+        <Text style={styles.labelText}>Apellido(s):</Text>
+        <TextInput style={styles.inputPill} placeholder="Tus apellidos" />
       </View>
+
       <View style={styles.containerRow}>
-        <Text style={styles.descText2}>Fecha de Nacimiento:</Text>
+        <Text style={styles.labelText}>Fecha de Nacimiento:</Text>
+        <TextInput style={styles.inputPill} placeholder="dd/mm/yyyy" />
+      </View>
+
+      <View style={styles.containerRow}>
+        <Text style={styles.labelText}>Número de Contacto:</Text>
+        <TextInput style={styles.inputPill} placeholder="xxx-xxx-xxxx" />
+      </View>
+
+      <View style={styles.containerRow}>
+        <Text style={styles.labelText}>Código de Grupo:</Text>
         <TextInput
-          style={styles.inputPill2}
-          placeholder="dd/mm/yyyy"
-        ></TextInput>
-      </View>
-      <View style={styles.containerRow}>
-        <Text style={styles.descText2}>Número de Contacto:</Text>
-        <TextInput
-          style={styles.inputPill2}
-          placeholder="xxx-xxx-xxxx"
-        ></TextInput>
-      </View>
-      <View style={styles.containerRow}>
-        <Text style={styles.descText2}>Código de Grupo:</Text>
-        <TextInput
-          style={styles.inputPill2}
+          style={styles.inputPill}
           placeholder="xxxxx-xxxxx"
           editable={false}
-        ></TextInput>
+        />
       </View>
+
       <View style={styles.containerRow}>
-        <Text style={styles.descText2}>Género:</Text>
-        <View style={styles.inputPill2}>
-          <Picker
-            selectedValue={selectedValue}
-            style={styles.picker}
-            onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+        <Text style={styles.labelText}>Género:</Text>
+        {Platform.OS === "ios" ? (
+          <TouchableOpacity
+            style={styles.pickerContainer}
+            onPress={openPickerModal}
           >
-            <Picker.Item label="Masculino" value="M" />
-            <Picker.Item label="Femenino" value="F" />
-            <Picker.Item label="Indeterminado" value="I" />
-          </Picker>
-        </View>
+            <Text style={styles.pickerText}>
+              {selectedValue === "Seleccionar"
+                ? "Seleccionar Género"
+                : selectedValue}
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={selectedValue}
+              style={styles.pickerAndroid}
+              onValueChange={(itemValue) => setSelectedValue(itemValue)}
+            >
+              <Picker.Item label="Masculino" value="M" />
+              <Picker.Item label="Femenino" value="F" />
+              <Picker.Item label="Indeterminado" value="I" />
+            </Picker>
+          </View>
+        )}
       </View>
-      <View>
-        <TouchableOpacity style={styles.roundedButton}>
-          <Text style={styles.buttonText}>Guardar</Text>
-        </TouchableOpacity>
-      </View>
+
+      <TouchableOpacity style={styles.roundedButton}>
+        <Text style={styles.buttonText}>Guardar</Text>
+      </TouchableOpacity>
+
+      {/* Modal para iOS */}
+      {Platform.OS === "ios" && (
+        <Modal
+          transparent={true}
+          visible={modalVisible}
+          animationType="slide"
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.pickerModal}>
+              <Picker
+                selectedValue={selectedValue}
+                onValueChange={(itemValue) => {
+                  setSelectedValue(itemValue);
+                  closePickerModal();
+                }}
+              >
+                <Picker.Item label="Masculino" value="M" />
+                <Picker.Item label="Femenino" value="F" />
+                <Picker.Item label="Indeterminado" value="I" />
+              </Picker>
+              <Button title="Cerrar" onPress={closePickerModal} />
+            </View>
+          </View>
+        </Modal>
+      )}
     </View>
   );
 }
@@ -99,73 +154,91 @@ export default function User() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-start",
+    paddingTop: 30,
     alignItems: "center",
     backgroundColor: "#fff",
   },
   containerRow: {
-    marginTop: 20,
-    justifyContent: "center",
     flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 15,
+    width: "90%",
   },
   profileCircle: {
-    marginTop: 10,
-    width: 250,
-    height: 225,
-    borderRadius: 100,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
     borderWidth: 1,
-    borderColor: "#edeef0",
-    justifyContent: "",
-    alignItems: "",
+    borderColor: "#ccc",
+    marginBottom: 15,
   },
-  roundedButton: {
-    width: 100,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 2,
-    backgroundColor: "#8884ff",
-    borderColor: "#edeef0",
+  placeholderCircle: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    borderWidth: 1,
+    borderColor: "#ccc",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 15,
+    marginBottom: 15,
+    backgroundColor: "#f0f0f0",
+  },
+  placeholderText: {
+    color: "#999",
+  },
+  roundedButton: {
+    width: 120,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#8884ff",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
   },
   buttonText: {
     color: "#fff",
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "bold",
-
-    alignItems: "center",
   },
-  descText2: {
-    fontSize: 18,
+  labelText: {
+    fontSize: 16,
     color: "#000",
-    textAlign: "left",
-    width: "%40",
-    marginStart: "5%",
-  },
-  inputPill2: {
-    borderRadius: 20,
-    backgroundColor: "#fff",
-    borderStyle: "solid",
-    borderColor: "#000",
-    borderWidth: 1,
     flex: 1,
-    width: "40%",
-    height: 25,
-    marginStart: "5%",
-    marginEnd: "5%",
-    textAlign: "center",
-    justifyContent: 'center',
   },
-  descText3: {
-    fontSize: 18,
-    color: "#000",
-    textAlign: "left",
-    width: "%24",
-    marginStart: "5%",
-  },
-  picker: {
+  inputPill: {
+    flex: 2,
     height: 40,
-    width: '100%',
+    borderRadius: 20,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    backgroundColor: "#fff",
+  },
+  pickerContainer: {
+    flex: 2,
+    justifyContent: "center",
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: "#f9f9f9",
+  },
+  pickerText: {
+    color: "#999",
+  },
+  pickerAndroid: {
+    height: 40,
+    width: "100%",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  pickerModal: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
 });
