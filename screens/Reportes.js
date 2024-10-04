@@ -13,7 +13,7 @@ export default function Reportes() {
       console.log('Imagen seleccionada:', selectedImage);
       alert('Comentario y foto enviados correctamente');
       setComment(''); // Limpiar el campo de texto
-      setSelectedImage(null); // Limpiar la imagen seleccionada
+      setSelectedImage(null); // Limpiar la imagen seleccionadas
     } else {
       alert('Por favor, ingresa un comentario');
     }

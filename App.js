@@ -120,7 +120,7 @@ export default function App() {
         <Stack.Screen 
           name="ChangePassword" 
           component={ChangePassword} 
-          options={{ headerShown: true }} // Puedes decidir si quieres que el encabezado se muestre o no
+          options={{ headerShown: true }} // Puedes decidir si quieres que el encabezado se muestre o nos
         />
 
         

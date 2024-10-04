@@ -19,7 +19,7 @@ export default function ChangeUser() {
   return (
     <View style={styles.container}>
       <Image 
-        source={{ uri: selectedUser.avatar }} // Imagen del usuario seleccionado
+        source={{ uri: selectedUser.avatar }} // Imagen del usuario seleccionados
         style={styles.profileImage} 
       />
       <Text style={styles.title}>Cambiar Usuario</Text>
