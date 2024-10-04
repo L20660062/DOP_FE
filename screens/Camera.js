@@ -5,7 +5,7 @@ import { Camera, CameraType } from 'expo-camera/legacy';
 
 export default function CameraScreen() {
   const [facing, setFacing] = useState(Camera.Constants.Type.back); // Use Camera.Constants.Type
-  const [permission, requestPermission] = Camera.useCameraPermissions(); // Correct desctructuring
+  const [permission, requestPermission] = Camera.useCameraPermissions(); // Correct desctructuringss
   const [type, setType] = useState(CameraType.back);
 
     // Agrega el console.log aquí para ver el estado de permission

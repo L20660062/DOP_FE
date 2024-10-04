@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons'; // Importa Ionicons
 
 export default function Settings() {
   const navigation = useNavigation();
-  const [isDarkMode, setIsDarkMode] = useState(false); // Estado para el modo oscuro
+  const [isDarkMode, setIsDarkMode] = useState(false); // Estado para el modo oscuros
 
   const handleChangePassword = () => {
     navigation.navigate('ChangePassword'); 
