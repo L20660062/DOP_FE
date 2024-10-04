@@ -1,3 +1,4 @@
+//App.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -59,19 +60,8 @@ function TabNavigator() {
         }}  
       />
       
-      <Tab.Screen 
-        name="Reportes" 
-        component={Reportes} 
-        options={{ 
-          tabBarLabel: 'Reportes',  // Nombre personalizado para la pestaña inferior
-          headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
-              Reportes
-            </Text>
-          ),  // Componente personalizado para el título
-        }}  
-      />
-
+      {/* Elimina la pestaña de Reportes */}
+      
       <Tab.Screen 
         name="Geolocalización" 
         component={Geolocalizacion} 
@@ -113,6 +103,28 @@ export default function App() {
             headerShown: false // Desactivar el encabezado
           }} 
         />
+        <Stack.Screen 
+          name="Reportes" 
+          component={Reportes} 
+          options={{ headerShown: true }} // Puedes decidir si quieres que el encabezado se muestre o no
+        />
+        <Stack.Screen 
+          name="ChangeUser" 
+          component={ChangeUser} 
+          options={{ headerShown: true }} // Puedes decidir si quieres que el encabezado se muestre o no
+        />
+         <Stack.Screen 
+          name="ChangePhoneNumber" 
+          component={ChangePhoneNumber} 
+          options={{ headerShown: true }} // Puedes decidir si quieres que el encabezado se muestre o no
+        />
+        <Stack.Screen 
+          name="ChangePassword" 
+          component={ChangePassword} 
+          options={{ headerShown: true }} // Puedes decidir si quieres que el encabezado se muestre o nos
+        />
+
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
