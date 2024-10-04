@@ -1,11 +1,13 @@
-//App.js
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack'; 
 import { NavigationContainer } from '@react-navigation/native';
 import CameraScreen from './screens/Camera';  // Pantalla de detección de objetos
-import SettingsScreen from './screens/Settings';  // Pantalla de configuración
+import Reportes from './screens/Reportes';  // Pantalla de reportes
+import Geolocalizacion from './screens/Geolocalization';  // Pantalla de geolocalización
+import Settings from './screens/Settings';  // Pantalla de configuración
+import User from './screens/User';  // Pantalla de usuario
 import { Ionicons } from '@expo/vector-icons';  // Para iconos
 
 const Tab = createBottomTabNavigator();
@@ -14,7 +16,7 @@ const Stack = createStackNavigator();
 // Componente para el título con imagen
 const TitleWithImage = () => (
   <View style={styles.titleContainer}>
-  <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>Detección de Objetos</Text>
+    <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>Detección de Objetos</Text>
   </View>
 );
 
@@ -28,7 +30,13 @@ function TabNavigator() {
 
           if (route.name === 'Detección de Objetos') {
             iconName = 'camera';
-          } else if (route.name === 'Configuración') {
+          } else if (route.name === 'Reportes') {
+            iconName = 'bug';
+          } else if (route.name === 'Geolocalización') {
+            iconName = 'location';
+          } else if (route.name === 'Usuario') {
+            iconName = 'person';
+          } else if (route.name === 'Ajustes') {
             iconName = 'build';
           }
 
@@ -50,18 +58,44 @@ function TabNavigator() {
       />
       
       <Tab.Screen 
-  name="Configuración" 
-  component={SettingsScreen} 
-  options={{ 
-    tabBarLabel: 'Ajustes',  // Nombre personalizado para la pestaña inferior
-    headerTitle: () => (
-      <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
-        Configuración
-      </Text>
-    ),  // Componente personalizado para el título
-  }}  
-/>
+        name="Reportes" 
+        component={Reportes} 
+        options={{ 
+          tabBarLabel: 'Reportes',  // Nombre personalizado para la pestaña inferior
+          headerTitle: () => (
+            <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
+              Reportes
+            </Text>
+          ),  // Componente personalizado para el título
+        }}  
+      />
 
+      <Tab.Screen 
+        name="Geolocalización" 
+        component={Geolocalizacion} 
+        options={{ 
+          tabBarLabel: 'Geolocalización',
+          headerTitle: 'Geolocalización',
+        }}  
+      />
+
+      <Tab.Screen 
+        name="Usuario" 
+        component={User} 
+        options={{ 
+          tabBarLabel: 'Usuario',
+          headerTitle: 'Perfil de Usuario',
+        }}  
+      />
+
+      <Tab.Screen 
+        name="Ajustes" 
+        component={Settings} 
+        options={{ 
+          tabBarLabel: 'Ajustes',
+          headerTitle: 'Configuración de Ajustes',
+        }}  
+      />
     </Tab.Navigator>
   );
 }
@@ -91,11 +125,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginRight: 5, // Espacio entre el texto y la imagen
-  },
-  titleImage: {
-    width: 95, // Ajusta el tamaño de la imagen
-    height: 95, // Ajusta el tamaño de la imagen
-    resizeMode: 'contain',
-    marginLeft: 10,
   },
 });
