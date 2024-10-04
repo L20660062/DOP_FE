@@ -5,10 +5,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import CameraScreen from './screens/Camera';  // Pantalla de detección de objetos
 import Reportes from './screens/Reportes';  // Pantalla de reportes
+import ChangeUser from './screens/ChangeUser';
+import ChangeChangePhoneNumber from './screens/ChangePhoneNumber';
 import Geolocalizacion from './screens/Geolocalization';  // Pantalla de geolocalización
 import Settings from './screens/Settings';  // Pantalla de configuración
 import User from './screens/User';  // Pantalla de usuario
 import { Ionicons } from '@expo/vector-icons';  // Para iconos
+import ChangePhoneNumber from './screens/ChangePhoneNumber';
+import ChangePassword from './screens/ChangePassword';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator(); 
@@ -30,8 +34,6 @@ function TabNavigator() {
 
           if (route.name === 'Detección de Objetos') {
             iconName = 'camera';
-          } else if (route.name === 'Reportes') {
-            iconName = 'bug';
           } else if (route.name === 'Geolocalización') {
             iconName = 'location';
           } else if (route.name === 'Usuario') {
@@ -57,19 +59,8 @@ function TabNavigator() {
         }}  
       />
       
-      <Tab.Screen 
-        name="Reportes" 
-        component={Reportes} 
-        options={{ 
-          tabBarLabel: 'Reportes',  // Nombre personalizado para la pestaña inferior
-          headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
-              Reportes
-            </Text>
-          ),  // Componente personalizado para el título
-        }}  
-      />
-
+      {/* Elimina la pestaña de Reportes */}
+      
       <Tab.Screen 
         name="Geolocalización" 
         component={Geolocalizacion} 
@@ -105,12 +96,34 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen 
-          name="Main" 
+          name="Regresar" 
           component={TabNavigator} 
           options={{ 
             headerShown: false // Desactivar el encabezado
           }} 
         />
+        <Stack.Screen 
+          name="Reportes" 
+          component={Reportes} 
+          options={{ headerShown: true }} // Puedes decidir si quieres que el encabezado se muestre o no
+        />
+        <Stack.Screen 
+          name="ChangeUser" 
+          component={ChangeUser} 
+          options={{ headerShown: true }} // Puedes decidir si quieres que el encabezado se muestre o no
+        />
+         <Stack.Screen 
+          name="ChangePhoneNumber" 
+          component={ChangePhoneNumber} 
+          options={{ headerShown: true }} // Puedes decidir si quieres que el encabezado se muestre o no
+        />
+        <Stack.Screen 
+          name="ChangePassword" 
+          component={ChangePassword} 
+          options={{ headerShown: true }} // Puedes decidir si quieres que el encabezado se muestre o no
+        />
+
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
