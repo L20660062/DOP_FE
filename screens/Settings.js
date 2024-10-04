@@ -23,7 +23,7 @@ export default function Settings() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Configuración</Text>
+      <Text style={styles.title}>Configuración Union</Text>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={handleChangePassword}>
