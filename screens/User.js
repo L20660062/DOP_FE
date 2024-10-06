@@ -118,9 +118,15 @@ export default function User() {
         )}
       </View>
 
-      <TouchableOpacity style={styles.roundedButton}>
-        <Text style={styles.buttonText}>Guardar</Text>
-      </TouchableOpacity>
+      {/* Contenedor para los botones */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.roundedButton}>
+          <Text style={styles.buttonText}>Guardar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.roundedButton}>
+          <Text style={styles.buttonText}>Editar</Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Modal para iOS */}
       {Platform.OS === "ios" && (
@@ -156,7 +162,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 30,
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#f7f9fc", // Color de fondo más suave
   },
   containerRow: {
     flexDirection: "row",
@@ -168,16 +174,18 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 75,
-    borderWidth: 1,
-    borderColor: "#ccc",
+    borderWidth: 2,
+    borderColor: "#888",
     marginBottom: 15,
+    overflow: "hidden", // Para mantener la imagen dentro del círculo
+    backgroundColor: "#ddd", // Color de fondo para el círculo
   },
   placeholderCircle: {
     width: 150,
     height: 150,
     borderRadius: 75,
-    borderWidth: 1,
-    borderColor: "#ccc",
+    borderWidth: 2,
+    borderColor: "#888",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 15,
@@ -185,15 +193,23 @@ const styles = StyleSheet.create({
   },
   placeholderText: {
     color: "#999",
+    fontSize: 16,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
+    marginTop: 20,
   },
   roundedButton: {
-    width: 120,
+    flex: 1,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#8884ff",
+    backgroundColor: "#8884ff", // Color más atractivo
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 20,
+    marginHorizontal: 5,
+    elevation: 3, // Sombra en Android
   },
   buttonText: {
     color: "#fff",
@@ -202,7 +218,7 @@ const styles = StyleSheet.create({
   },
   labelText: {
     fontSize: 16,
-    color: "#000",
+    color: "#333", // Color del texto más oscuro
     flex: 1,
   },
   inputPill: {
@@ -213,6 +229,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 10,
     backgroundColor: "#fff",
+    shadowColor: "#000", // Sombra en el input
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.5,
+    elevation: 2, // Sombra en Android
   },
   pickerContainer: {
     flex: 2,
@@ -225,7 +249,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
   },
   pickerText: {
-    color: "#999",
+    color: "#333", // Color del texto en el picker
   },
   pickerAndroid: {
     height: 40,
@@ -234,6 +258,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Fondo oscuro para el modal
   },
   pickerModal: {
     backgroundColor: "#fff",

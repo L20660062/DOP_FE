@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; // Importar el hook de navegación
 
-// Lista de usuarios limitada a 3s
+// Lista de usuarios limitada a 3
 const users = [
   { id: 1, name: 'Usuario 1', avatar: 'https://via.placeholder.com/100?text=ERES' },
   { id: 2, name: 'Usuario 2', avatar: 'https://via.placeholder.com/100?text=UN' },
@@ -11,15 +12,17 @@ const users = [
 export default function ChangeUser() {
   const [selectedUser, setSelectedUser] = useState(users[0]);
   const [newUsername, setNewUsername] = useState('');
+  const navigation = useNavigation(); // Acceder a la función de navegación
 
   const handleUserSelect = (user) => {
     setSelectedUser(user);
+    navigation.navigate('Login'); // Navegar a la pantalla de Login
   };
 
   return (
     <View style={styles.container}>
       <Image 
-        source={{ uri: selectedUser.avatar }} // Imagen del usuario seleccionados
+        source={{ uri: selectedUser.avatar }} // Imagen del usuario seleccionado
         style={styles.profileImage} 
       />
       <Text style={styles.title}>Cambiar Usuario</Text>
@@ -29,7 +32,7 @@ export default function ChangeUser() {
           <TouchableOpacity 
             key={user.id} 
             style={styles.userItem} 
-            onPress={() => handleUserSelect(user)}
+            onPress={() => handleUserSelect(user)} // Cambia a la función de selección de usuario
           >
             <View style={[styles.userCard, selectedUser.id === user.id && styles.selectedCard]}>
               <Image 
@@ -51,8 +54,11 @@ export default function ChangeUser() {
         onChangeText={setNewUsername}
       />
 
-      <TouchableOpacity style={styles.button} onPress={() => { /* Lógica para cambiar usuario */ }}>
-        <Text style={styles.buttonText}>Guardar Cambios</Text>
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={() => { /* Lógica para agregar usuario */ }}
+      >
+        <Text style={styles.buttonText}>Agregar Usuario</Text>
       </TouchableOpacity>
     </View>
   );
@@ -123,14 +129,14 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderWidth: 1,
     marginBottom: 20,
+    borderRadius: 10, // Bordes redondeados
     paddingLeft: 15,
-    borderRadius: 8,
     backgroundColor: '#fff',
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#8884ff', // Color del botón
     paddingVertical: 15,
-    borderRadius: 8,
+    borderRadius: 25, // Bordes redondeados
     alignItems: 'center',
   },
   buttonText: {

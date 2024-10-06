@@ -94,13 +94,12 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   button: {
-    backgroundColor: '#007bff',
-    paddingVertical: 12,
-    paddingHorizontal: 25,
-    borderRadius: 8,
-    marginBottom: 20,
+    backgroundColor: '#8884ff',
+    paddingVertical: 15,
+    borderRadius: 25,
     alignItems: 'center',
     width: '100%',
+    elevation: 3,
   },
   buttonText: {
     color: '#fff',
@@ -108,10 +107,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   submitButton: {
+    borderRadius: 25,
     backgroundColor: '#28a745',
-    paddingVertical: 12,
+    paddingVertical: 15,
     paddingHorizontal: 25,
-    borderRadius: 8,
     marginTop: 20,
     alignItems: 'center',
     width: '100%',
@@ -126,5 +125,8 @@ const styles = StyleSheet.create({
     height: 200,
     resizeMode: 'contain',
     marginVertical: 10,
+    borderRadius: 8, // Añadido para bordes redondeados
+    borderWidth: 1, // Añadido para borde
+    borderColor: '#ccc', // Color del borde
   },
 });
