@@ -1,4 +1,3 @@
-//Camera.js   
 import { useState, useEffect } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Camera, CameraType } from 'expo-camera/legacy';
@@ -8,41 +7,37 @@ export default function CameraScreen() {
   const [permission, requestPermission] = Camera.useCameraPermissions(); // Correct desctructuring
   const [type, setType] = useState(CameraType.back);
 
-    // Agrega el console.log aquí para ver el estado de permission
-    console.log(permission); // Esto imprimirá el estado de los permisos en la consola.
+  console.log(permission); // Esto imprimirá el estado de los permisos en la consola.
 
-    // Handle camera permission request
-    useEffect(() => {
-      (async () => {
-        const { status } = await Camera.requestCameraPermissionsAsync();
-        if (status !== 'granted') {
-          alert('We need camera permissions to make this work!');
-        }
-      })();
-    }, []);
+  // Handle camera permission request
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        alert('We need camera permissions to make this work!');
+      }
+    })();
+  }, []);
   
-    if (!permission) {
-      // Camera permissions are still loading.
-      return <View />;
-    }
+  if (!permission) {
+    // Camera permissions are still loading.
+    return <View />;
+  }
 
-    if (!permission.granted) {
-      // Camera permissions are not granted yet.
-      return (
-        <View style={styles.container}>
-          <Text style={styles.message}>We need your permission to show the camera</Text>
-          <Button onPress={requestPermission} title="Grant Permission" />
-        </View>
-      );
-    }
+  if (!permission.granted) {
+    // Camera permissions are not granted yet.
+    return (
+      <View style={styles.container}>
+        <Text style={styles.message}>We need your permission to show the camera</Text>
+        <Button onPress={requestPermission} title="Grant Permission" />
+      </View>
+    );
+  }
 
-    function toggleCameraFacing() {
-      setFacing(current => (current === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back));
-    }
+  function toggleCameraFacing() {
+    setFacing(current => (current === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back));
+  }
   
-
-
-
   return (
     <View style={styles.container}>
       <Camera style={styles.camera} type={facing}>
@@ -57,16 +52,18 @@ export default function CameraScreen() {
 }
 
 const styles = StyleSheet.create({
-container: {
+  container: {
     flex: 1,
-    justifyContent: 'center',
   },
   message: {
     textAlign: 'center',
     paddingBottom: 10,
   },
   camera: {
-    flex: 1,
+    width: '100%',      // Ancho completo
+    height: '50%',      // 50% de la pantalla
+    position: 'absolute', // Posicionar de manera absoluta
+    top: 0,             // Mover hacia la parte superior
   },
   buttonContainer: {
     flex: 1,
