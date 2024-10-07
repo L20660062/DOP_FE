@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Animated, Easing } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Animated } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function ChangePhoneNumber() {
   const [slideAnim] = useState(new Animated.Value(300)); // Comienza fuera de la vista (a la derecha)
@@ -8,9 +9,8 @@ export default function ChangePhoneNumber() {
   useEffect(() => {
     // Iniciar animación de deslizamiento al montar el componente
     Animated.timing(slideAnim, {
-      toValue: 0, // Mueve a la posición normals
+      toValue: 0, // Mueve a la posición normal
       duration: 300,
-      easing: Easing.ease,
       useNativeDriver: true,
     }).start();
   }, [slideAnim]);
@@ -19,13 +19,16 @@ export default function ChangePhoneNumber() {
     <Animated.View style={[styles.container, { transform: [{ translateX: slideAnim }] }]}>
       <Text style={styles.title}>Cambiar Número de Teléfono</Text>
       
-      <TextInput
-        style={styles.input}
-        placeholder="Nuevo Número de Teléfono"
-        keyboardType="phone-pad"
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-      />
+      <View style={styles.inputContainer}>
+        <Icon name="call-outline" size={25} color="#8884ff" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Nuevo Número de Teléfono"
+          keyboardType="phone-pad"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+        />
+      </View>
       
       <TouchableOpacity 
         style={styles.button} 
@@ -41,33 +44,42 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: 'flex-start', // Cambiado para alinear al inicio
-    backgroundColor: '#f9f9f9', // Fondo más claro
+    justifyContent: 'center', // Centrar verticalmente
+    backgroundColor: '#f9f9f9',
   },
   title: {
     fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 10, // Margen reducido
-    textAlign: 'center', // Centra el título
-    color: '#333', // Color del texto más oscuro
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#333',
   },
-  input: {
-    height: 50,
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderColor: '#ccc',
     borderWidth: 1,
     marginBottom: 20,
-    paddingLeft: 15,
-    borderRadius: 8, // Bordes redondeados
-    backgroundColor: '#fff', // Fondo blanco para el campo de texto
+    borderRadius: 25, // Bordes redondeados
+    backgroundColor: '#fff',
+    paddingHorizontal: 15,
+  },
+  icon: {
+    marginRight: 10,
+  },
+  input: {
+    height: 50,
+    flex: 1, // Permite que el input ocupe el espacio disponible
+    fontSize: 16,
   },
   button: {
-    backgroundColor: '#007BFF', // Color de fondo del botón
-    paddingVertical: 15, // Espaciado vertical
-    borderRadius: 8, // Bordes redondeados
-    alignItems: 'center', // Centrar el texto en el botón
+    backgroundColor: '#8884ff', // Color del botón
+    paddingVertical: 15,
+    borderRadius: 25, // Bordes redondeados
+    alignItems: 'center',
   },
   buttonText: {
-    color: '#fff', // Color del texto del botón
+    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },

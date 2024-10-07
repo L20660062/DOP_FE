@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Switch } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Switch, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons'; // Importa Ionicons
-
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Settings() {
   const navigation = useNavigation();
-  const [isDarkMode, setIsDarkMode] = useState(false); // Estado para el modo oscuross
+  const [isDarkMode, setIsDarkMode] = useState(false); // Estado para el modo oscuro
 
   const handleChangePassword = () => {
     navigation.navigate('ChangePassword'); 
@@ -24,21 +23,43 @@ export default function Settings() {
     navigation.navigate('Reportes'); 
   };
 
+  const handleResponseReport = () => {
+    Alert.alert('Funcionalidad no implementada', 'Esta opción aún no está disponible.');
+  };
+
+  const handleEvadedObjects = () => {
+    Alert.alert('Funcionalidad no implementada', 'Esta opción aún no está disponible.');
+  };
+
+  const handleSendLocation = () => {
+    navigation.navigate('SendLocation'); 
+  };
+
+  const handleEmergencyContacts = () => {
+    navigation.navigate('EmergencyContacts'); 
+  };
+
+  const handleSounds = () => {
+    Alert.alert('Funcionalidad no implementada', 'Esta opción aún no está disponible.');
+  };
+
+  const handleVibrations = () => {
+    Alert.alert('Funcionalidad no implementada', 'Esta opción aún no está disponible.');
+  };
+
   const toggleSwitch = () => {
     setIsDarkMode(previousState => !previousState);
     Alert.alert('Modo Oscuro', `Modo oscuro ${!isDarkMode ? 'activado' : 'desactivado'}.`);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Configuración</Text>
-
+    <ScrollView style={styles.container}>
       <TouchableOpacity style={styles.switchContainer} onPress={toggleSwitch} activeOpacity={0.7}>
         <Ionicons name={isDarkMode ? "moon" : "sunny"} size={24} color="#007AFF" style={styles.icon} />
         <Text style={styles.switchText}>  Modo Oscuro</Text>
         <Switch
-          trackColor={{ false: '#767577', true: '#81b0ff' }} // Color de la pista
-          thumbColor={isDarkMode ? '#f5dd4b' : '#f4f3f4'} // Color del botón
+          trackColor={{ false: '#767577', true: '#81b0ff' }}
+          thumbColor={isDarkMode ? '#f5dd4b' : '#f4f3f4'}
           onValueChange={toggleSwitch}
           value={isDarkMode}
         />
@@ -60,14 +81,49 @@ export default function Settings() {
           <Text style={styles.buttonText}>Cambiar Usuario</Text>
         </TouchableOpacity>
 
+        <View style={styles.spacer} />
+
         <TouchableOpacity style={styles.button} onPress={handleGoToReportes} activeOpacity={0.7}>
           <Ionicons name="document-text-outline" size={24} color="#007AFF" style={styles.icon} />
           <Text style={styles.buttonText}>Ir a Reportes</Text>
         </TouchableOpacity>
-        
-        
+
+        {/* Nuevos apartados */}
+        <TouchableOpacity style={styles.button} onPress={handleResponseReport} activeOpacity={0.7}>
+          <Ionicons name="chatbubbles-outline" size={24} color="#007AFF" style={styles.icon} />
+          <Text style={styles.buttonText}>Respuesta de Reporte</Text>
+        </TouchableOpacity>
+
+        <View style={styles.spacer} />
+
+        <TouchableOpacity style={styles.button} onPress={handleEvadedObjects} activeOpacity={0.7}>
+          <Ionicons name="alert-circle-outline" size={24} color="#007AFF" style={styles.icon} />
+          <Text style={styles.buttonText}>Objetos Evadidos</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={handleSounds} activeOpacity={0.7}>
+          <Ionicons name="volume-high-outline" size={24} color="#007AFF" style={styles.icon} />
+          <Text style={styles.buttonText}>Sonidos</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={handleVibrations} activeOpacity={0.7}>
+          <Ionicons name="vibration-outline" size={24} color="#007AFF" style={styles.icon} />
+          <Text style={styles.buttonText}>Vibraciones</Text>
+        </TouchableOpacity>
+
+        <View style={styles.spacer} />
+
+        <TouchableOpacity style={styles.button} onPress={handleSendLocation} activeOpacity={0.7}>
+          <Ionicons name="location-outline" size={24} color="#007AFF" style={styles.icon} />
+          <Text style={styles.buttonText}>Enviar Ubicación a</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={handleEmergencyContacts} activeOpacity={0.7}>
+          <Ionicons name="people-outline" size={24} color="#007AFF" style={styles.icon} />
+          <Text style={styles.buttonText}>Contactos de Emergencia</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -75,49 +131,52 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#F7F7F7', // Color de fondo
+    backgroundColor: '#F7F7F7',
+  },
+  spacer: {
+    height: 20, // Ajusta la altura según necesites
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
-    color: '#333', // Color de texto del título
+    color: '#333',
   },
   switchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 15,
-    backgroundColor: '#FFFFFF', // Color de fondo del contenedor del switch
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0', // Color del borde inferior del switch
+    borderBottomColor: '#E0E0E0',
   },
   switchText: {
     fontSize: 18,
-    color: '#007AFF', // Color de texto del switch
-    flex: 1, // Para que el texto ocupe el espacio disponible
+    color: '#007AFF',
+    flex: 1,
   },
   buttonContainer: {
     width: '100%',
     borderRadius: 10,
-    overflow: 'hidden', // Asegura que los bordes redondeados se mantengan
+    overflow: 'hidden',
   },
   button: {
-    backgroundColor: '#FFFFFF', // Color de fondo de los botones
+    backgroundColor: '#FFFFFF',
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0', // Color del borde inferior de los botones
-    justifyContent: 'flex-start', // Alinear el contenido hacia la izquierda
-    flexDirection: 'row', // Mostrar icono y texto en fila
-    alignItems: 'center', // Centrar verticalmente
+    borderBottomColor: '#E0E0E0',
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   buttonText: {
     fontSize: 18,
-    color: '#007AFF', // Color azul de texto
-    textAlign: 'left', // Alinear texto a la izquierda
-    marginLeft: 10, // Espacio entre el icono y el texto
+    color: '#007AFF',
+    textAlign: 'left',
+    marginLeft: 10,
   },
   icon: {
-    marginRight: 10, // Espacio entre el icono y el texto
+    marginRight: 10,
   },
 });

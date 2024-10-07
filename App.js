@@ -1,66 +1,31 @@
 // App.js
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Alert } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack'; 
 import { NavigationContainer } from '@react-navigation/native';
-import CameraScreen from './screens/Camera';  // Pantalla de detección de objetos
-import Reportes from './screens/Reportes';  // Pantalla de reportes
+import CameraScreen from './screens/Camera';  
+import Reportes from './screens/Reportes';  
 import ChangeUser from './screens/ChangeUser';
 import ChangePhoneNumber from './screens/ChangePhoneNumber';
-import Geolocalizacion from './screens/Geolocalization';  // Pantalla de geolocalización
-import Settings from './screens/Settings';  // Pantalla de configuración
-import User from './screens/User';  // Pantalla de usuario
-import { Ionicons } from '@expo/vector-icons';  // Para iconos
+import Geolocalizacion from './screens/Geolocalization';  
+import Settings from './screens/Settings';  
+import User from './screens/User';  
+import { Ionicons } from '@expo/vector-icons';  
 import ChangePassword from './screens/ChangePassword';
+import LoginScreen from './screens/LoginScreen';  
+import SendLocation from './screens/SendLocation';
+import EmergencyContacts from './screens/EmergencyContacts';
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
+const Stack = createStackNavigator(); 
 
-// Componente para el título con imagen
 const TitleWithImage = () => (
   <View style={styles.titleContainer}>
     <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>Detección de Objetos</Text>
   </View>
 );
 
-// Pantalla de login
-function LoginScreen({ navigation }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleLogin = () => {
-    // Aquí validas las credenciales (simple validación para ejemplo)
-    if (username === 'XD' && password === '1234') {
-      // Si las credenciales son correctas, navega a la pantalla principal con pestañas
-      navigation.replace('Main'); // 'replace' evita que el usuario regrese al login
-    } else {
-      Alert.alert('Error', 'Usuario o contraseña incorrectos');
-    }
-  };
-
-  return (
-    <View style={styles.loginContainer}>
-      <Text style={styles.loginTitle}>Iniciar Sesión</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Usuario"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={true}
-      />
-      <Button title="Iniciar Sesión" onPress={handleLogin} />
-    </View>
-  );
-}
-
-// Navegación por pestañas (parte inferior)
 function TabNavigator() {
   return (
     <Tab.Navigator
@@ -89,12 +54,11 @@ function TabNavigator() {
         name="Detección de Objetos" 
         component={CameraScreen} 
         options={{ 
-          tabBarLabel: 'Cámara',  // Nombre personalizado para la pestaña inferior
-          title: 'Detección de Objetos', // Título diferente para la navegación inferior
-          headerTitle: () => <TitleWithImage />, // Usar el componente de título
+          tabBarLabel: 'Cámara',
+          title: 'Detección de Objetos',
+          headerTitle: () => <TitleWithImage />,
         }}  
       />
-      
       <Tab.Screen 
         name="Geolocalización" 
         component={Geolocalizacion} 
@@ -103,7 +67,6 @@ function TabNavigator() {
           headerTitle: 'Geolocalización',
         }}  
       />
-
       <Tab.Screen 
         name="Usuario" 
         component={User} 
@@ -112,7 +75,6 @@ function TabNavigator() {
           headerTitle: 'Perfil de Usuario',
         }}  
       />
-
       <Tab.Screen 
         name="Ajustes" 
         component={Settings} 
@@ -128,37 +90,50 @@ function TabNavigator() {
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator>
         <Stack.Screen 
           name="Login" 
           component={LoginScreen} 
-          options={{ headerShown: false }} // Ocultar encabezado en la pantalla de login
+          options={{ headerShown: false }} // Oculta el encabezado
         />
         <Stack.Screen 
-          name="Main" 
+          name="Regresar" 
           component={TabNavigator} 
-          options={{ headerShown: false }} // Ocultar encabezado en la pantalla principal
+          options={{ 
+            headerShown: false 
+          }} 
         />
         <Stack.Screen 
           name="Reportes" 
           component={Reportes} 
-          options={{ headerShown: true }} // Puedes decidir si quieres que el encabezado se muestre o no
+          options={{ headerShown: true }}
         />
         <Stack.Screen 
           name="ChangeUser" 
           component={ChangeUser} 
-          options={{ headerShown: true }} // Puedes decidir si quieres que el encabezado se muestre o no
+          options={{ headerShown: true }} 
         />
         <Stack.Screen 
           name="ChangePhoneNumber" 
           component={ChangePhoneNumber} 
-          options={{ headerShown: true }} // Puedes decidir si quieres que el encabezado se muestre o no
+          options={{ headerShown: true }} 
         />
         <Stack.Screen 
           name="ChangePassword" 
           component={ChangePassword} 
-          options={{ headerShown: true }} // Puedes decidir si quieres que el encabezado se muestre o no
+          options={{ headerShown: true }} 
         />
+        <Stack.Screen 
+          name="SendLocation"  
+          component={SendLocation} 
+          options={{ headerShown: true }} 
+          />
+          <Stack.Screen 
+          name="EmergencyContacts"  
+          component={EmergencyContacts} 
+          options={{ headerShown: true }} 
+          />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -172,23 +147,6 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginRight: 5, // Espacio entre el texto y la imagen
-  },
-  loginContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-  loginTitle: {
-    fontSize: 24,
-    marginBottom: 24,
-    textAlign: 'center',
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingLeft: 8,
+    marginRight: 5,
   },
 });
