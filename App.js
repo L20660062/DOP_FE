@@ -13,7 +13,9 @@ import Settings from './screens/Settings';
 import User from './screens/User';  
 import { Ionicons } from '@expo/vector-icons';  
 import ChangePassword from './screens/ChangePassword';
-import LoginScreen from './screens/LoginScreen';  // Importa el LoginScreen
+import LoginScreen from './screens/LoginScreen';  
+import SendLocation from './screens/SendLocation';
+import EmergencyContacts from './screens/EmergencyContacts';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator(); 
@@ -121,6 +123,17 @@ export default function App() {
           component={ChangePassword} 
           options={{ headerShown: true }} 
         />
+        <Stack.Screen 
+          name="SendLocation"  
+          component={SendLocation} 
+          options={{ headerShown: true }} 
+          />
+          <Stack.Screen 
+          name="EmergencyContacts"  
+          component={EmergencyContacts} 
+          options={{ headerShown: true }} 
+          />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

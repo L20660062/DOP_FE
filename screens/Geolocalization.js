@@ -1,14 +1,16 @@
-//Geolocalization.js
+// Geolocalization.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, Alert, TouchableOpacity } from 'react-native';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
 import * as SMS from 'expo-sms'; // Importar API de SMS
+import { useNavigation } from '@react-navigation/native'; // Importar el hook de navegación
 
 export default function GeolocationScreen() {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [address, setAddress] = useState(null); // Estado para la dirección
+  const navigation = useNavigation(); // Obtener el objeto de navegación
 
   useEffect(() => {
     (async () => {
@@ -42,6 +44,10 @@ export default function GeolocationScreen() {
       };
     })();
   }, []);
+
+  const handleSendLocation = () => {
+    navigation.navigate('SendLocation'); 
+  };
 
   const sendLocationSMS = async () => {
     if (location) {
@@ -101,7 +107,7 @@ export default function GeolocationScreen() {
       )}
 
       {/* Botón para enviar la ubicación por SMS usando TouchableOpacity */}
-      <TouchableOpacity style={styles.button} onPress={sendLocationSMS}>
+      <TouchableOpacity style={styles.button} onPress={handleSendLocation}>
         <Text style={styles.buttonText}>Enviar Ubicación por SMS</Text>
       </TouchableOpacity>
     </View>

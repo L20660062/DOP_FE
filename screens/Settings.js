@@ -32,11 +32,11 @@ export default function Settings() {
   };
 
   const handleSendLocation = () => {
-    Alert.alert('Funcionalidad no implementada', 'Esta opción aún no está disponible.');
+    navigation.navigate('SendLocation'); 
   };
 
   const handleEmergencyContacts = () => {
-    Alert.alert('Funcionalidad no implementada', 'Esta opción aún no está disponible.');
+    navigation.navigate('EmergencyContacts'); 
   };
 
   const handleSounds = () => {
