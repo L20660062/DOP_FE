@@ -14,6 +14,7 @@ import User from './screens/User';
 import { Ionicons } from '@expo/vector-icons';  
 import ChangePassword from './screens/ChangePassword';
 import LoginScreen from './screens/LoginScreen';  
+import LoginVoz from './screens/LoginVoz';  
 import SendLocation from './screens/SendLocation';
 import EmergencyContacts from './screens/EmergencyContacts';
 
@@ -93,7 +94,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen 
           name="Login" 
-          component={LoginScreen} 
+          component={LoginVoz} 
           options={{ headerShown: false }} // Oculta el encabezado
         />
         <Stack.Screen 
