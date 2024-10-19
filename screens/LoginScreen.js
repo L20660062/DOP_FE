@@ -1,6 +1,6 @@
 // screens/LoginScreen.js
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert, Image, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert, Image, TouchableOpacity, ImageBackground, KeyboardAvoidingView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';  // Para iconos
 import Logo from '../assets/Logo.jpg';  // Asegúrate de que la ruta sea correcta
 import Fondo from '../assets/fondo.webp';  // Imagen de fondo
@@ -19,7 +19,11 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <ImageBackground source={Fondo} style={styles.background}>
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0} // Ajuste opcional
+      >
         <Image source={Logo} style={styles.logo} />
         <View style={styles.loginContainer}>
           <Text style={styles.loginTitle}>Iniciar Sesión</Text>
@@ -46,7 +50,7 @@ const LoginScreen = ({ navigation }) => {
             <Text style={styles.buttonText}>Iniciar Sesión</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </ImageBackground>
   );
 };

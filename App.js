@@ -94,7 +94,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen 
           name="Login" 
-          component={LoginVoz} 
+          component={LoginScreen} 
           options={{ headerShown: false }} // Oculta el encabezado
         />
         <Stack.Screen 
