@@ -1,6 +1,8 @@
+//Reportes.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons'; // Para usar íconos de Ionicons
 
 export default function Reportes() {
   const [comment, setComment] = useState('');
@@ -46,7 +48,7 @@ export default function Reportes() {
 
       <TextInput
         style={styles.input}
-        placeholder="Describe el fallo..."
+        placeholder="Describe el problema que encontraste..."
         value={comment}
         onChangeText={setComment}
         multiline
@@ -54,6 +56,7 @@ export default function Reportes() {
 
       {/* Botón personalizado para subir la foto */}
       <TouchableOpacity style={styles.button} onPress={pickImage}>
+        <Ionicons name="camera-outline" size={24} color="#fff" style={styles.icon} />
         <Text style={styles.buttonText}>Subir Foto</Text>
       </TouchableOpacity>
 
@@ -62,6 +65,7 @@ export default function Reportes() {
       )}
 
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+        <Ionicons name="send-outline" size={24} color="#fff" style={styles.icon} />
         <Text style={styles.submitButtonText}>Enviar Comentario</Text>
       </TouchableOpacity>
     </View>
@@ -74,13 +78,14 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#f5f5f5',
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#333',
+    textAlign: 'center',
   },
   input: {
     width: '100%',
@@ -88,23 +93,36 @@ const styles = StyleSheet.create({
     padding: 15,
     borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 12,
     backgroundColor: '#fff',
     marginBottom: 20,
     textAlignVertical: 'top',
+    fontSize: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   button: {
-    backgroundColor: '#8884ff',
+    backgroundColor: '#4a90e2',
     paddingVertical: 15,
     borderRadius: 25,
     alignItems: 'center',
     width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
     elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
+    marginLeft: 10,
   },
   submitButton: {
     borderRadius: 25,
@@ -114,19 +132,35 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignItems: 'center',
     width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
   },
   submitButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
+    marginLeft: 10,
+  },
+  icon: {
+    marginRight: 5,
   },
   image: {
-    width: 200,
-    height: 200,
+    width: 250,
+    height: 250,
     resizeMode: 'contain',
-    marginVertical: 10,
-    borderRadius: 8, // Añadido para bordes redondeados
-    borderWidth: 1, // Añadido para borde
-    borderColor: '#ccc', // Color del borde
+    marginVertical: 20,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
   },
 });

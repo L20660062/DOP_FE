@@ -1,4 +1,3 @@
-//Camera.js
 import { useState, useEffect } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
 import { Camera } from 'expo-camera/legacy'; // Asegúrate de importar Camera correctamente
@@ -10,8 +9,10 @@ export default function CameraScreen() {
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState(null); // Estado para la dirección
   const [addressList, setAddressList] = useState([]); // Estado para la lista de direcciones
+  const [locationSubscription, setLocationSubscription] = useState(null); // Estado para la suscripción
 
   useEffect(() => {
+    // Solicitar permisos de cámara
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       if (status !== 'granted') {
@@ -19,16 +20,15 @@ export default function CameraScreen() {
       }
     })();
 
-    // Lógica de ubicación
+    // Solicitar permisos de ubicación y observar la ubicación
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status === 'granted') {
-        // Iniciar seguimiento de la ubicación
-        Location.watchPositionAsync(
+        const subscription = await Location.watchPositionAsync(
           {
             accuracy: Location.Accuracy.High,
-            timeInterval: 5000, // Cambia a 5000 ms para 5 segundos
-            distanceInterval: 1,
+            timeInterval: 10000,
+            distanceInterval: 5,
           },
           async (newLocation) => {
             setLocation(newLocation);
@@ -37,23 +37,26 @@ export default function CameraScreen() {
               longitude: newLocation.coords.longitude,
             });
             if (addr.length > 0) {
-              const newAddress = addr[0]; // Obtener la primera dirección
-              setAddress(newAddress); // Actualizar el estado de la dirección
+              const newAddress = addr[0];
+              setAddress(newAddress);
               setAddressList((prevList) => [
                 ...prevList,
-                `${newAddress.name}, ${newAddress.city}, ${newAddress.region}`, // Agregar dirección a la lista
+                `${newAddress.name}, ${newAddress.city}, ${newAddress.region}`,
               ]);
             }
           }
         );
+        setLocationSubscription(subscription); // Guardar la suscripción
       } else {
         alert('Location permission not granted');
       }
     })();
 
-    // Limpiar el intervalo al desmontar el componente
+    // Limpiar la suscripción al desmontar el componente
     return () => {
-      Location.stopObservingLocation();
+      if (locationSubscription) {
+        locationSubscription.remove(); // Detener la observación de la ubicación
+      }
     };
   }, []);
 
@@ -70,10 +73,6 @@ export default function CameraScreen() {
     );
   }
 
-  function toggleCameraFacing() {
-    setFacing((current) => (current === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back));
-  }
-
   // Formato del texto a mostrar en función de la dirección
   let locationText = 'Cargando ubicación...';
   if (address) {
@@ -85,21 +84,24 @@ export default function CameraScreen() {
       <View style={styles.cameraContainer}>
         <Camera style={styles.camera} type={facing}>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-              <Text style={styles.text}>Detectando Objetos...</Text>
-            </TouchableOpacity>
+            {/* Aquí puedes agregar otros botones o contenido si lo necesitas */}
           </View>
         </Camera>
       </View>
-      <View style={styles.textContainer}>
+
+      <View style={styles.locationContainer}>
         <Text style={styles.label}>{locationText}</Text>
       </View>
+
       <View style={styles.listContainer}>
+        <Text style={styles.listTitle}>Historial de Ubicaciones</Text>
         <FlatList
           data={addressList}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <Text style={styles.listItem}>{item}</Text>
+            <View style={styles.listItemContainer}>
+              <Text style={styles.listItem}>{item}</Text>
+            </View>
           )}
         />
       </View>
@@ -110,13 +112,15 @@ export default function CameraScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f4f4f8',
   },
   message: {
     textAlign: 'center',
     paddingBottom: 10,
   },
   cameraContainer: {
-    flex: 0.7,
+    flex: 0.6,
+    backgroundColor: '#000',
   },
   camera: {
     width: '100%',
@@ -124,35 +128,52 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    flexDirection: 'row',
     backgroundColor: 'transparent',
-    margin: 64,
-  },
-  button: {
-    flex: 1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
+    marginBottom: 20,
+    justifyContent: 'center',
   },
   text: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
   },
-  textContainer: {
-    flex: 0.3,
+  locationContainer: {
+    flex: 0.15,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: '#fff',
+    marginVertical: 10,
+    borderRadius: 10,
+    elevation: 3,
   },
   label: {
-    fontSize: 15,
-    color: 'black',
+    fontSize: 16,
+    color: '#333',
   },
   listContainer: {
-    flex: 0.3,
+    flex: 0.25,
+    padding: 15,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    elevation: 5,
+  },
+  listTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#333',
+  },
+  listItemContainer: {
+    backgroundColor: '#f1f1f1',
+    borderRadius: 10,
     padding: 10,
+    marginBottom: 10,
+    elevation: 2,
   },
   listItem: {
     fontSize: 14,
-    color: 'black',
+    color: '#555',
   },
 });

@@ -1,50 +1,55 @@
-// screens/LoginVoz.js
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Alert, Image, TouchableOpacity, ImageBackground } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';  // Para iconos
-import * as Speech from 'expo-speech';
-import * as Permissions from 'expo-permissions';
-import * as Audio from 'expo-av';
-import Logo from '../assets/Logo.jpg';  // Asegúrate de que la ruta sea correcta
-import Fondo from '../assets/fondo.webp';  // Imagen de fondo
+import { Ionicons } from '@expo/vector-icons';
+import { Audio } from 'expo-av';
+import * as Speech from 'expo-speech';  // Importar expo-speech
+import Logo from '../assets/Logo.jpg';
+import Fondo from '../assets/fondo.webp';
 
 const LoginVoz = ({ navigation }) => {
   const [isListening, setIsListening] = useState(false);
+  const [simulatedResponse, setSimulatedResponse] = useState('');
 
-  // Simula el reconocimiento de voz con una palabra clave
-  const keyword = 'Perro125';
+  const keyword = 'Daniel'; // Palabra clave esperada
 
-  // Función para iniciar el reconocimiento de voz
+  // Función para iniciar el reconocimiento de voz simulado
   const startListening = async () => {
-    const { status } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
-    if (status !== 'granted') {
-      Alert.alert('Permiso denegado', 'Es necesario el permiso de micrófono para usar esta función.');
-      return;
-    }
-
-    setIsListening(true);
-    // Aquí, normalmente se usaría una librería para reconocimiento de voz, como `expo-speech` o un servicio externo
-    // pero en este ejemplo vamos a simular que se captura la palabra correcta.
     try {
-      // Configura y empieza a grabar
-      const recording = new Audio.Recording();
-      await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
-      await recording.startAsync();
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
 
-      // Simula escuchar por unos segundos
-      setTimeout(async () => {
-        await recording.stopAndUnloadAsync();
+      const { status } = await Audio.requestPermissionsAsync();
+
+      if (status !== 'granted') {
+        Alert.alert('Permiso denegado', 'Es necesario el permiso de micrófono para usar esta función.');
+        return;
+      }
+
+      setIsListening(true);
+
+      // Simular la grabación y el reconocimiento de voz
+      setTimeout(() => {
         setIsListening(false);
 
-        // Aquí, en un caso real, analizarías la grabación y extraerías el texto
-        const simulatedResponse = 'Perro125'; // Respuesta simulada
+        // Simular una respuesta incorrecta o correcta cambiando este valor
+        const simulatedResponse = 'Daniel'; // Cambia esta palabra para simular
+
+        // Mostrar en consola la palabra reconocida
+        console.log('Palabra reconocida:', simulatedResponse);
 
         if (simulatedResponse === keyword) {
-          navigation.replace('Regresar'); // Redirige a la pantalla principal si coincide
+          // Decir con el altavoz que va a entrar
+          Speech.speak('Palabra reconocida, entrando en la aplicación');
+          navigation.replace('Regresar'); // Acceso correcto
         } else {
+          // Decir con el altavoz que no lo reconoció
+          Speech.speak('Palabra no reconocida, intente de nuevo');
           Alert.alert('Error', 'Palabra clave incorrecta');
         }
-      }, 5000); // Escucha por 5 segundos
+      }, 5000); // Simula 5 segundos de grabación
+
     } catch (error) {
       setIsListening(false);
       Alert.alert('Error', 'No se pudo iniciar el reconocimiento de voz.');
