@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
-import { Camera } from 'expo-camera/legacy'; // Asegúrate de importar Camera correctamente
+import { Camera } from 'expo-camera'; // Asegúrate de importar Camera correctamente
 import * as Location from 'expo-location'; // Importar Location
 
 export default function CameraScreen() {
