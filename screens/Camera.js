@@ -1,25 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
-import { Camera } from 'expo-camera'; // Asegúrate de importar Camera correctamente
-import * as Location from 'expo-location'; // Importar Location
+import { Button, StyleSheet, Text, View, FlatList } from 'react-native';
+import { CameraView, useCameraPermissions } from 'expo-camera';
+import * as Location from 'expo-location';
 
 export default function CameraScreen() {
-  const [facing, setFacing] = useState(Camera.Constants.Type.back);
-  const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [facing, setFacing] = useState('back'); // Usar CameraType en lugar de Camera.Constants.Type
+  const [permission, requestPermission] = useCameraPermissions(); // Usar useCameraPermissions
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState(null); // Estado para la dirección
   const [addressList, setAddressList] = useState([]); // Estado para la lista de direcciones
   const [locationSubscription, setLocationSubscription] = useState(null); // Estado para la suscripción
 
   useEffect(() => {
-    // Solicitar permisos de cámara
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      if (status !== 'granted') {
-        alert('We need camera permissions to make this work!');
-      }
-    })();
-
     // Solicitar permisos de ubicación y observar la ubicación
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -82,11 +74,18 @@ export default function CameraScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.cameraContainer}>
-        <Camera style={styles.camera} type={facing}>
+        <CameraView style={styles.camera} type={facing}>
           <View style={styles.buttonContainer}>
-            {/* Aquí puedes agregar otros botones o contenido si lo necesitas */}
+            <Button
+              title="Cambiar cámara"
+              onPress={() =>
+                setFacing((prev) =>
+                  prev === CameraType.back ? CameraType.front : CameraType.back
+                )
+              }
+            />
           </View>
-        </Camera>
+        </CameraView>
       </View>
 
       <View style={styles.locationContainer}>
@@ -128,9 +127,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    backgroundColor: 'transparent',
-    marginBottom: 20,
     justifyContent: 'center',
+    marginBottom: 20,
   },
   text: {
     fontSize: 18,
