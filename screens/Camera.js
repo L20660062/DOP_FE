@@ -1,3 +1,4 @@
+//Camera.js
 import { useState, useEffect } from 'react';
 import { Button, StyleSheet, Text, View, FlatList } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
@@ -76,17 +77,10 @@ export default function CameraScreen() {
       <View style={styles.cameraContainer}>
         <CameraView style={styles.camera} type={facing}>
           <View style={styles.buttonContainer}>
-            <Button
-              title="Cambiar cámara"
-              onPress={() =>
-                setFacing((prev) =>
-                  prev === CameraType.back ? CameraType.front : CameraType.back
-                )
-              }
-            />
           </View>
         </CameraView>
-      </View>
+      </View>  
+      
 
       <View style={styles.locationContainer}>
         <Text style={styles.label}>{locationText}</Text>
