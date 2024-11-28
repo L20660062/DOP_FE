@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button, StyleSheet, Text, View, FlatList } from 'react-native';
-import { CameraView, useCameraPermissions } from 'expo-camera';
+import { CameraView, useCameraPermissions } from 'expo-camera'; // Actualiza el import
 import * as Location from 'expo-location';
 
 export default function CameraScreen() {
-  const [facing, setFacing] = useState('back'); // Usar CameraType en lugar de Camera.Constants.Type
-  const [permission, requestPermission] = useCameraPermissions(); // Usar useCameraPermissions
+  const [facing, setFacing] = useState('back'); // Actualiza el valor de facing
+  const [permission, requestPermission] = useCameraPermissions(); // Utiliza useCameraPermissions
   const [location, setLocation] = useState(null);
-  const [address, setAddress] = useState(null); // Estado para la dirección
-  const [addressList, setAddressList] = useState([]); // Estado para la lista de direcciones
-  const [locationSubscription, setLocationSubscription] = useState(null); // Estado para la suscripción
+  const [address, setAddress] = useState(null);
+  const [addressList, setAddressList] = useState([]);
+  const [detectedBoxes, setDetectedBoxes] = useState([]);
+  const cameraRef = useRef(null);
 
   useEffect(() => {
-    // Solicitar permisos de ubicación y observar la ubicación
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status === 'granted') {
@@ -38,19 +38,45 @@ export default function CameraScreen() {
             }
           }
         );
-        setLocationSubscription(subscription); // Guardar la suscripción
       } else {
         alert('Location permission not granted');
       }
     })();
-
-    // Limpiar la suscripción al desmontar el componente
-    return () => {
-      if (locationSubscription) {
-        locationSubscription.remove(); // Detener la observación de la ubicación
-      }
-    };
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (cameraRef.current) {
+        const photo = await cameraRef.current.takePictureAsync();
+        sendImageToBackend(photo.uri);
+      }
+    }, 1000); // Detect every second
+
+    return () => clearInterval(interval); // Clean up the interval on component unmount
+  }, []);
+
+  const sendImageToBackend = async (uri) => {
+    const formData = new FormData();
+    const uriParts = uri.split('.');
+    const fileType = uriParts[uriParts.length - 1];
+
+    formData.append('file', {
+      uri,
+      name: `frame.${fileType}`,
+      type: `image/${fileType}`,
+    });
+
+    try {
+      const response = await fetch('http://192.168.0.16:5000/detect', {
+        method: 'POST',
+        body: formData,
+      });
+      const boxes = await response.json();
+      setDetectedBoxes(boxes);
+    } catch (error) {
+      console.error('Error during object detection: ', error);
+    }
+  };
 
   if (!permission) {
     return <View />;
@@ -65,7 +91,6 @@ export default function CameraScreen() {
     );
   }
 
-  // Formato del texto a mostrar en función de la dirección
   let locationText = 'Cargando ubicación...';
   if (address) {
     locationText = `Dirección: ${address.name}, ${address.city}, ${address.region}`;
@@ -74,17 +99,8 @@ export default function CameraScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.cameraContainer}>
-        <CameraView style={styles.camera} type={facing}>
-          <View style={styles.buttonContainer}>
-            <Button
-              title="Cambiar cámara"
-              onPress={() =>
-                setFacing((prev) =>
-                  prev === CameraType.back ? CameraType.front : CameraType.back
-                )
-              }
-            />
-          </View>
+        <CameraView style={styles.camera} type={facing} ref={cameraRef}>
+          {/* Additional UI elements */}
         </CameraView>
       </View>
 
@@ -92,17 +108,35 @@ export default function CameraScreen() {
         <Text style={styles.label}>{locationText}</Text>
       </View>
 
-      <View style={styles.listContainer}>
-        <Text style={styles.listTitle}>Historial de Ubicaciones</Text>
-        <FlatList
-          data={addressList}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.listItemContainer}>
-              <Text style={styles.listItem}>{item}</Text>
-            </View>
-          )}
-        />
+      <View style={styles.boxesContainer}>
+        {detectedBoxes.map((box, index) => (
+          <View
+            key={index}
+            style={{
+              position: 'absolute',
+              top: box.y1,
+              left: box.x1,
+              width: box.x2 - box.x1,
+              height: box.y2 - box.y1,
+              borderWidth: 2,
+              borderColor: 'green',
+              zIndex: 1,
+            }}
+          >
+            <Text
+              style={{
+                color: 'green',
+                position: 'absolute',
+                top: -20,
+                left: 0,
+                backgroundColor: 'black',
+                padding: 5,
+              }}
+            >
+              {box.label}
+            </Text>
+          </View>
+        ))}
       </View>
     </View>
   );
@@ -113,10 +147,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f4f4f8',
   },
-  message: {
-    textAlign: 'center',
-    paddingBottom: 10,
-  },
   cameraContainer: {
     flex: 0.6,
     backgroundColor: '#000',
@@ -124,16 +154,6 @@ const styles = StyleSheet.create({
   camera: {
     width: '100%',
     height: '100%',
-  },
-  buttonContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  text: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
   },
   locationContainer: {
     flex: 0.15,
@@ -149,29 +169,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
-  listContainer: {
-    flex: 0.25,
-    padding: 15,
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    elevation: 5,
-  },
-  listTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
-  },
-  listItemContainer: {
-    backgroundColor: '#f1f1f1',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
-    elevation: 2,
-  },
-  listItem: {
-    fontSize: 14,
-    color: '#555',
+  boxesContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
   },
 });
