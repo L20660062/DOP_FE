@@ -102,7 +102,8 @@ export default function CameraScreen() {
         <CameraView style={styles.camera} type={facing} ref={cameraRef}>
           {/* Additional UI elements */}
         </CameraView>
-      </View>
+      </View>  
+      
 
       <View style={styles.locationContainer}>
         <Text style={styles.label}>{locationText}</Text>
