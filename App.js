@@ -6,6 +6,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import CameraScreen from './screens/Camera';  
 import Reportes from './screens/Reportes';  
+import AnswerReporte from './screens/AnswerReporte';  
+import EvadedObjects from './screens/EvadedObjects';  
+import Sounds from './screens/Sounds';  
 import ChangeUser from './screens/ChangeUser';
 import ChangePhoneNumber from './screens/ChangePhoneNumber';
 import Geolocalizacion from './screens/Geolocalization';  
@@ -110,29 +113,44 @@ export default function App() {
           options={{ headerShown: true }}
         />
         <Stack.Screen 
+            name="AnswerReporte" 
+            component={AnswerReporte} 
+            options={{ title: 'Respustas a Reporte' }} 
+          />
+          <Stack.Screen 
+            name="EvadedObjects" 
+            component={EvadedObjects} 
+            options={{ title: 'Objetos Evadidos' }} 
+          />
+          <Stack.Screen 
+            name="Sounds" 
+            component={Sounds} 
+            options={{ title: 'Sonidos' }} 
+          />
+        <Stack.Screen 
           name="ChangeUser" 
           component={ChangeUser} 
-          options={{ headerShown: true }} 
+          options={{ title: 'Cambiar Usuario' }} 
         />
         <Stack.Screen 
           name="ChangePhoneNumber" 
           component={ChangePhoneNumber} 
-          options={{ headerShown: true }} 
+          options={{ title: 'Cambiar Número de Teléfono' }} 
         />
         <Stack.Screen 
           name="ChangePassword" 
           component={ChangePassword} 
-          options={{ headerShown: true }} 
+          options={{ title: 'Cambiar Contraseña' }} 
         />
         <Stack.Screen 
           name="SendLocation"  
           component={SendLocation} 
-          options={{ headerShown: true }} 
+          options={{ title: 'Enviar Ubicación' }} 
           />
           <Stack.Screen 
           name="EmergencyContacts"  
           component={EmergencyContacts} 
-          options={{ headerShown: true }} 
+          options={{ title: 'Emergencia' }} 
           />
 
       </Stack.Navigator>

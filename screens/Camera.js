@@ -1,34 +1,113 @@
-//Camera.js
-import { useState, useEffect } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
-import { Camera } from 'expo-camera/legacy'; // Asegúrate de importar Camera correctamente
-import * as Location from 'expo-location'; // Importar Location
+import { useState, useEffect, useRef } from 'react';
+import { Button, StyleSheet, Text, View, FlatList } from 'react-native';
+import { CameraView, useCameraPermissions } from 'expo-camera';
+import * as Location from 'expo-location';
+import * as Speech from 'expo-speech'; // Importa expo-speech para la voz
+
+const DETECTION_INTERVAL_MS = 1500; // Intervalo de detección en milisegundos (5 segundos)
 
 export default function CameraScreen() {
-  const [facing, setFacing] = useState(Camera.Constants.Type.back);
-  const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [facing, setFacing] = useState('back'); 
+  const [permission, requestPermission] = useCameraPermissions(); 
   const [location, setLocation] = useState(null);
-  const [address, setAddress] = useState(null); // Estado para la dirección
-  const [addressList, setAddressList] = useState([]); // Estado para la lista de direcciones
+  const [address, setAddress] = useState(null);
+  const [addressList, setAddressList] = useState([]);
+  const [detectedBoxes, setDetectedBoxes] = useState([]);
+  const cameraRef = useRef(null);
+
+  const genderDictionary = {
+    "persona": "femenino",
+    "bicicleta": "femenino",
+    "carro": "masculino",
+    "moto": "femenino",
+    "avión": "masculino",
+    "camión": "masculino",
+    "tren": "masculino",
+    "camioneta": "femenino",
+    "lancha": "femenino",
+    "semáforo": "masculino",
+    "hidrante": "masculino",
+    "señal de alto": "femenino",
+    "parquímetro": "masculino",
+    "banca": "femenino",
+    "pájaro": "masculino",
+    "gato": "masculino",
+    "perro": "masculino",
+    "caballo": "masculino",
+    "borrego": "masculino",
+    "vaca": "femenino",
+    "elefante": "masculino",
+    "oso": "masculino",
+    "cebra": "femenino",
+    "jirafa": "femenino",
+    "mochila": "femenino",
+    "sombrilla": "femenino",
+    "bolsa": "femenino",
+    "corbata": "femenino",
+    "maleta": "femenino",
+    "frisbee": "masculino",
+    "esquís": "masculino",
+    "tabla de snowboard": "femenino",
+    "pelota": "femenino",
+    "papalote": "masculino",
+    "bate de béisbol": "masculino",
+    "guante de béisbol": "masculino",
+    "patineta": "femenino",
+    "tabla de surf": "femenino",
+    "raqueta de tenis": "femenino",
+    "botella": "femenino",
+    "copa de vino": "femenino",
+    "taza": "femenino",
+    "tenedor": "masculino",
+    "cuchillo": "masculino",
+    "cuchara": "femenino",
+    "tazón": "masculino",
+    "plátano": "masculino",
+    "manzana": "femenino",
+    "sándwich": "masculino",
+    "naranja": "femenino",
+    "brócoli": "masculino",
+    "zanahoria": "femenino",
+    "hot dog": "masculino",
+    "pizza": "femenino",
+    "donita": "femenino",
+    "pastel": "masculino",
+    "silla": "femenino",
+    "sofá": "masculino",
+    "planta en maceta": "femenino",
+    "cama": "femenino",
+    "comedor": "masculino",
+    "escusado": "masculino",
+    "tele": "femenino",
+    "laptop": "femenino",
+    "mouse": "masculino",
+    "control": "masculino",
+    "teclado": "masculino",
+    "celular": "masculino",
+    "microondas": "masculino",
+    "horno": "masculino",
+    "tostador": "masculino",
+    "lavabo": "masculino",
+    "refrigerador": "masculino",
+    "libro": "masculino",
+    "reloj": "masculino",
+    "florero": "masculino",
+    "tijeras": "femenino",
+    "oso de peluche": "masculino",
+    "secadora de pelo": "femenino",
+    "cepillo de dientes": "masculino"
+  };
+
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      if (status !== 'granted') {
-        alert('We need camera permissions to make this work!');
-      }
-    })();
-
-    // Lógica de ubicación
-    (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status === 'granted') {
-        // Iniciar seguimiento de la ubicación
-        Location.watchPositionAsync(
+        const subscription = await Location.watchPositionAsync(
           {
             accuracy: Location.Accuracy.High,
-            timeInterval: 5000, // Cambia a 5000 ms para 5 segundos
-            distanceInterval: 1,
+            timeInterval: 10000,
+            distanceInterval: 5,
           },
           async (newLocation) => {
             setLocation(newLocation);
@@ -37,11 +116,11 @@ export default function CameraScreen() {
               longitude: newLocation.coords.longitude,
             });
             if (addr.length > 0) {
-              const newAddress = addr[0]; // Obtener la primera dirección
-              setAddress(newAddress); // Actualizar el estado de la dirección
+              const newAddress = addr[0];
+              setAddress(newAddress);
               setAddressList((prevList) => [
                 ...prevList,
-                `${newAddress.name}, ${newAddress.city}, ${newAddress.region}`, // Agregar dirección a la lista
+                `${newAddress.name}, ${newAddress.city}, ${newAddress.region}`,
               ]);
             }
           }
@@ -50,12 +129,58 @@ export default function CameraScreen() {
         alert('Location permission not granted');
       }
     })();
-
-    // Limpiar el intervalo al desmontar el componente
-    return () => {
-      Location.stopObservingLocation();
-    };
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (cameraRef.current) {
+        const photo = await cameraRef.current.takePictureAsync();
+        sendImageToBackend(photo.uri);
+      }
+    }, DETECTION_INTERVAL_MS);
+
+    return () => clearInterval(interval); 
+  }, []);
+
+  const sendImageToBackend = async (uri) => {
+    const formData = new FormData();
+    const uriParts = uri.split('.');
+    const fileType = uriParts[uriParts.length - 1];
+  
+    formData.append('file', {
+      uri,
+      name: `frame.${fileType}`,
+      type: `image/${fileType}`,
+    });
+  
+    try {
+      const response = await fetch('http://192.168.0.16:5000/detect', {
+        method: 'POST',
+        body: formData,
+      });
+      const { detections } = await response.json();
+      setDetectedBoxes(detections || []);
+      announceDetections(detections || []);
+    } catch (error) {
+      console.error('Error during object detection: ', error);
+    }
+  };
+
+  const getArticle = (label, count) => {
+    const gender = genderDictionary[label] || 'masculino'; // Por defecto masculino
+    const article = gender === 'femenino' ? (count === 1 ? 'una' : `${count}`) : (count === 1 ? 'un' : `${count}`);
+    return `${article} ${label}`;
+  };
+  
+  const announceDetections = (detections) => {
+    if (detections.length === 0) {
+      Speech.speak('No se detectaron objetos', { rate: 1.5, voice: 'es-ES' });
+      return;
+    }
+  
+    const messages = detections.map((box) => getArticle(box.label, box.count));
+    Speech.speak(messages.join('. '), { rate: 1.5, voice: 'es-ES' });
+  };
 
   if (!permission) {
     return <View />;
@@ -70,11 +195,6 @@ export default function CameraScreen() {
     );
   }
 
-  function toggleCameraFacing() {
-    setFacing((current) => (current === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back));
-  }
-
-  // Formato del texto a mostrar en función de la dirección
   let locationText = 'Cargando ubicación...';
   if (address) {
     locationText = `Dirección: ${address.name}, ${address.city}, ${address.region}`;
@@ -83,25 +203,14 @@ export default function CameraScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.cameraContainer}>
-        <Camera style={styles.camera} type={facing}>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-              <Text style={styles.text}>Detectando Objetos...</Text>
-            </TouchableOpacity>
-          </View>
-        </Camera>
-      </View>
-      <View style={styles.textContainer}>
+        <CameraView style={styles.camera} type={facing} ref={cameraRef}>
+          {/* Additional UI elements */}
+        </CameraView>
+      </View>  
+      
+
+      <View style={styles.locationContainer}>
         <Text style={styles.label}>{locationText}</Text>
-      </View>
-      <View style={styles.listContainer}>
-        <FlatList
-          data={addressList}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <Text style={styles.listItem}>{item}</Text>
-          )}
-        />
       </View>
     </View>
   );
@@ -110,49 +219,28 @@ export default function CameraScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  message: {
-    textAlign: 'center',
-    paddingBottom: 10,
+    backgroundColor: '#f4f4f8',
   },
   cameraContainer: {
-    flex: 0.7,
+    flex: 0.6,
+    backgroundColor: '#000',
   },
   camera: {
     width: '100%',
     height: '100%',
   },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    margin: 64,
-  },
-  button: {
-    flex: 1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  textContainer: {
-    flex: 0.3,
+  locationContainer: {
+    flex: 0.15,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: '#fff',
+    marginVertical: 10,
+    borderRadius: 10,
+    elevation: 3,
   },
   label: {
-    fontSize: 15,
-    color: 'black',
-  },
-  listContainer: {
-    flex: 0.3,
-    padding: 10,
-  },
-  listItem: {
-    fontSize: 14,
-    color: 'black',
+    fontSize: 16,
+    color: '#333',
   },
 });

@@ -1,9 +1,20 @@
-// EmergencyContacts.js
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, Alert, StyleSheet } from 'react-native';
 
 const EmergencyContactsScreen = () => {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState([
+    { name: 'Carlos López', phone: '123-456-7890' },
+    { name: 'María González', phone: '098-765-4321' },
+    { name: 'Ana Sánchez', phone: '555-555-5555' },
+    { name: 'Luis Hernández', phone: '444-444-4444' },
+    { name: 'Fernanda Pérez', phone: '333-333-3333' },
+    { name: 'Raúl Jiménez', phone: '222-222-2222' },
+    { name: 'Sofía Martínez', phone: '111-111-1111' },
+    { name: 'David Torres', phone: '999-999-9999' },
+    { name: 'Laura Flores', phone: '888-888-8888' },
+    { name: 'Jorge Mendoza', phone: '777-777-7777' },
+  ]);
+
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [editingIndex, setEditingIndex] = useState(null);
@@ -40,108 +51,151 @@ const EmergencyContactsScreen = () => {
 
   const renderContactItem = ({ item, index }) => (
     <View style={styles.contactItem}>
-      <Text style={styles.contactText}>{item.name}: {item.phone}</Text>
+      <View style={styles.contactInfo}>
+        <Text style={styles.contactName}>{item.name}</Text>
+        <Text style={styles.contactPhone}>{item.phone}</Text>
+      </View>
       <View style={styles.contactButtons}>
         <TouchableOpacity onPress={() => handleEditContact(index)} style={styles.editButton}>
-          <Text style={styles.buttonText}>Edit</Text>
+          <Text style={styles.buttonText}>Editar</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleDeleteContact(index)} style={styles.deleteButton}>
-          <Text style={styles.buttonText}>Delete</Text>
+          <Text style={styles.buttonText}>Eliminar</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Emergency Contacts</Text>
+  const renderHeader = () => (
+    <View>
+      <Text style={styles.title}>Contactos de Emergencia</Text>
       <TextInput
         style={styles.input}
-        placeholder="Name"
+        placeholder="Nombre"
         value={name}
         onChangeText={setName}
       />
       <TextInput
         style={styles.input}
-        placeholder="Phone"
+        placeholder="Teléfono"
         value={phone}
         onChangeText={setPhone}
         keyboardType="phone-pad"
       />
       <TouchableOpacity style={styles.button} onPress={handleAddOrUpdateContact}>
-        <Text style={styles.buttonText}>{editingIndex !== null ? 'Update Contact' : 'Add Contact'}</Text>
+        <Text style={styles.buttonText}>{editingIndex !== null ? 'Actualizar Contacto' : 'Añadir Contacto'}</Text>
       </TouchableOpacity>
-
-      <FlatList
-        data={contacts}
-        renderItem={renderContactItem}
-        keyExtractor={(item, index) => index.toString()}
-        style={styles.contactList}
-      />
+      <Text style={styles.contactsTitle}>Lista de Contactos</Text>
     </View>
+  );
+
+  return (
+    <FlatList
+      data={contacts}
+      renderItem={renderContactItem}
+      keyExtractor={(item, index) => index.toString()}
+      contentContainerStyle={styles.contactList}  // Agregado margen horizontal
+      ListHeaderComponent={renderHeader}
+      ListEmptyComponent={<Text style={styles.emptyText}>No hay contactos agregados aún.</Text>}
+    />
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
+    backgroundColor: '#F3F4F6',
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
+    color: '#333',
     marginBottom: 20,
     textAlign: 'center',
   },
   input: {
     width: '100%',
-    padding: 10,
+    padding: 15,
     borderWidth: 1,
-    borderColor: '#888',
-    borderRadius: 5,
-    marginBottom: 10,
+    borderColor: '#D1D5DB',
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    marginBottom: 15,
+    fontSize: 16,
   },
   button: {
-    backgroundColor: '#8884ff',
-    padding: 10,
-    borderRadius: 25,
-    marginTop: 10,
+    backgroundColor: '#4F46E5',
+    paddingVertical: 15,
+    paddingHorizontal: 25,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 20,
   },
   buttonText: {
     fontSize: 18,
-    color: 'white',
-    textAlign: 'center',
+    color: '#FFF',
+    fontWeight: '600',
   },
   contactList: {
-    width: '100%',
-    marginTop: 20,
+    paddingHorizontal: 20,  // Añadido margen horizontal para toda la lista
   },
   contactItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    padding: 15,
+    backgroundColor: '#FFF',
+    borderRadius: 10,
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
   },
-  contactText: {
+  contactInfo: {
+    flex: 1,
+  },
+  contactName: {
     fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  contactPhone: {
+    fontSize: 16,
+    color: '#6B7280',
+    marginTop: 5,
   },
   contactButtons: {
     flexDirection: 'row',
   },
   editButton: {
-    backgroundColor: '#ffc107',
-    padding: 5,
-    borderRadius: 5,
-    marginRight: 5,
+    backgroundColor: '#F59E0B',
+    padding: 8,
+    borderRadius: 8,
+    marginRight: 10,
   },
   deleteButton: {
-    backgroundColor: '#dc3545',
-    padding: 5,
-    borderRadius: 5,
+    backgroundColor: '#EF4444',
+    padding: 8,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#6B7280',
+  },
+  contactsTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
+    marginTop: 20,
   },
 });
 

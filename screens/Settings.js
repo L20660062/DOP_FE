@@ -1,3 +1,4 @@
+//Settings.js
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Switch, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -23,11 +24,15 @@ export default function Settings() {
     navigation.navigate('Reportes'); 
   };
 
-  const handleResponseReport = () => {
-    Alert.alert('Funcionalidad no implementada', 'Esta opción aún no está disponible.');
+  const handleGoToAnswerReportes = () => {
+    navigation.navigate('AnswerReporte'); // Aquí navegamos a la nueva pantalla
+  };  
+
+  const handleGoToEvadedObjects = () => {
+    navigation.navigate('EvadedObjects'); // Aquí navegamos a la nueva pantalla
   };
 
-  const handleEvadedObjects = () => {
+  const handleResponseReport = () => {
     Alert.alert('Funcionalidad no implementada', 'Esta opción aún no está disponible.');
   };
 
@@ -39,8 +44,8 @@ export default function Settings() {
     navigation.navigate('EmergencyContacts'); 
   };
 
-  const handleSounds = () => {
-    Alert.alert('Funcionalidad no implementada', 'Esta opción aún no está disponible.');
+  const handleGoToSounds = () => {
+    navigation.navigate('Sounds'); 
   };
 
   const handleVibrations = () => {
@@ -88,26 +93,26 @@ export default function Settings() {
           <Text style={styles.buttonText}>Ir a Reportes</Text>
         </TouchableOpacity>
 
-        {/* Nuevos apartados */}
-        <TouchableOpacity style={styles.button} onPress={handleResponseReport} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.button} onPress={handleGoToAnswerReportes} activeOpacity={0.7}>
           <Ionicons name="chatbubbles-outline" size={24} color="#007AFF" style={styles.icon} />
           <Text style={styles.buttonText}>Respuesta de Reporte</Text>
         </TouchableOpacity>
 
+
         <View style={styles.spacer} />
 
-        <TouchableOpacity style={styles.button} onPress={handleEvadedObjects} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.button} onPress={handleGoToEvadedObjects} activeOpacity={0.7}>
           <Ionicons name="alert-circle-outline" size={24} color="#007AFF" style={styles.icon} />
           <Text style={styles.buttonText}>Objetos Evadidos</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={handleSounds} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.button} onPress={handleGoToSounds} activeOpacity={0.7}>
           <Ionicons name="volume-high-outline" size={24} color="#007AFF" style={styles.icon} />
           <Text style={styles.buttonText}>Sonidos</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={handleVibrations} activeOpacity={0.7}>
-          <Ionicons name="vibration-outline" size={24} color="#007AFF" style={styles.icon} />
+          <Ionicons name="volume-mute-outline" size={24} color="#007AFF" style={styles.icon} />
           <Text style={styles.buttonText}>Vibraciones</Text>
         </TouchableOpacity>
 
